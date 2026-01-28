@@ -1,0 +1,292 @@
+/* Dashboard */
+.dashboard {
+    min-height: 100vh;
+    background: #f5f7fa;
+}
+
+.dashboard-header {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-content h1 {
+    color: #333;
+    font-size: 28px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-name {
+    color: #666;
+    font-weight: 500;
+}
+
+.sign-out-btn {
+    padding: 10px 20px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.sign-out-btn:hover {
+    background: #5568d3;
+}
+
+/* Dashboard Main */
+.dashboard-main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+/* Current Temperature Section */
+.current-temp-section {
+    margin-bottom: 30px;
+}
+
+.current-temp-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 40px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.current-temp-card h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+.temp-display {
+    margin: 20px 0;
+}
+
+.temp-value {
+    font-size: 80px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.temp-unit {
+    font-size: 40px;
+    opacity: 0.8;
+    margin-left: 5px;
+}
+
+.temp-loading {
+    font-size: 30px;
+}
+
+.temp-status {
+    font-size: 18px;
+    margin-top: 20px;
+    opacity: 0.9;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-icon {
+    font-size: 40px;
+}
+
+.stat-content h3 {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+}
+
+.stat-unit {
+    font-size: 18px;
+    color: #999;
+    margin-left: 5px;
+}
+
+/* Chart Section */
+.chart-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.chart-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+}
+
+/* Logs Section */
+.logs-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.logs-section h3 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.logs-container {
+    overflow-x: auto;
+}
+
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.logs-table thead {
+    background: #f8f9fa;
+}
+
+.logs-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.logs-table td {
+    padding: 15px 12px;
+    border-top: 1px solid #eee;
+    color: #333;
+}
+
+.logs-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-normal {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-high {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.no-data {
+    text-align: center;
+    color: #999;
+    padding: 40px;
+}
+
+/* Responsive Design for Dashboard */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .header-content h1 {
+        font-size: 24px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .temp-value {
+        font-size: 60px;
+    }
+
+    .temp-unit {
+        font-size: 30px;
+    }
+
+    .current-temp-card {
+        padding: 30px 20px;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+
+    .logs-table {
+        font-size: 14px;
+    }
+
+    .logs-table th,
+    .logs-table td {
+        padding: 10px 8px;
+    }
+
+    .user-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+    }
+}

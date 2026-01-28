@@ -1,0 +1,12 @@
+{
+  "name": "suncool-frontend",
+  "version": "1.0.0",
+  "description": "SunCool Frontend - Temperature Monitoring Dashboard",
+  "scripts": {
+    "start": "npx http-server -p 8000 -c-1 -o",
+    "dev": "npx http-server -p 8000 -c-1"
+  },
+  "keywords": ["suncool", "temperature", "monitoring", "dashboard"],
+  "author": "",
+  "license": "ISC"
+}
