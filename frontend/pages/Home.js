@@ -10,6 +10,34 @@ const Dashboard = () => {
         humidity: null
     });
 
+    const handleSignOut = async () => {
+        const result = await Swal.fire({
+            title: 'Sign Out?',
+            text: 'Are you sure you want to sign out?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#667eea',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, sign out',
+            cancelButtonText: 'Cancel'
+        });
+
+        if (result.isConfirmed) {
+            await signOut();
+            Swal.fire({
+                title: 'Signed Out!',
+                text: 'You have been successfully signed out.',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            setTimeout(() => {
+                window.location.hash = '#/login';
+                window.location.reload();
+            }, 1500);
+        }
+    };
+
     useEffect(() => {
         // Listen to temperature data from Firebase
         const tempRef = database.ref('temperatures');
@@ -55,7 +83,7 @@ const Dashboard = () => {
                     <h1>🌡️ SunCool Dashboard</h1>
                     <div className="user-info">
                         <span className="user-name">{user.displayName}</span>
-                        <button onClick={signOut} className="sign-out-btn">Sign Out</button>
+                        <button onClick={handleSignOut} className="sign-out-btn">Sign Out</button>
                     </div>
                 </div>
             </header>

@@ -48,7 +48,8 @@ if (!DEMO_MODE) {
         },
         signOut: async () => {
             console.log('Demo: Sign out clicked');
-            window.location.reload();
+            // Auth context will handle the alert
+            return Promise.resolve();
         }
     };
     
