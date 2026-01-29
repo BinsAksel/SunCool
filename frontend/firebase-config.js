@@ -1,15 +1,16 @@
 // Firebase Configuration
 // DEMO MODE: Set to false and add your Firebase config for production
-const DEMO_MODE = true;
+const DEMO_MODE = false;
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    databaseURL: "YOUR_DATABASE_URL",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyD9lITWJIwcCy0SFyy8_kdadNgHsnIDcVQ",
+    authDomain: "suncool-666d8.firebaseapp.com",
+    databaseURL: "https://suncool-666d8-default-rtdb.firebaseio.com",
+    projectId: "suncool-666d8",
+    storageBucket: "suncool-666d8.firebasestorage.app",
+    messagingSenderId: "945347754805",
+    appId: "1:945347754805:web:0f6d215a2a62814fb86a7c",
+    measurementId: "G-LJ0TERPW81"
 };
 
 let auth, database, googleProvider;
