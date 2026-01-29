@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Body Temperature Display Test - SunCool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .test-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .temp-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 16px rgba(255, 107, 107, 0.3);
+        }
+
+        .temp-value {
+            font-size: 80px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .temp-unit {
+            font-size: 40px;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .temp-loading {
+            font-size: 40px;
+            color: white;
+        }
+
+        .temp-status {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        .status-normal {
+            color: #51cf66;
+        }
+
+        .status-warning {
+            color: #ff6b6b;
+        }
+
+        .test-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .test-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .test-btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .test-btn-success {
+            background: #51cf66;
+            color: white;
+        }
+
+        .test-btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .test-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .data-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .data-info h3 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .data-row:last-child {
+            border-bottom: none;
+        }
+
+        .data-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .data-value {
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-connected {
+            background: #51cf66;
+            box-shadow: 0 0 8px #51cf66;
+        }
+
+        .status-disconnected {
+            background: #ff6b6b;
+            box-shadow: 0 0 8px #ff6b6b;
+        }
+
+        .log-container {
+            background: #2d3748;
+            color: #48bb78;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #48bb78;
+            padding-left: 10px;
+        }
+
+        .log-error {
+            color: #fc8181;
+            border-left-color: #fc8181;
+        }
+
+        .log-warning {
+            color: #f6ad55;
+            border-left-color: #f6ad55;
+        }
+
+        .log-info {
+            color: #63b3ed;
+            border-left-color: #63b3ed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌡️ SunCool Body Temperature Display Test</h1>
+            <p><span class="status-indicator" id="connectionStatus"></span><span id="connectionText">Initializing...</span></p>
+        </div>
+
+        <div class="test-section">
+            <h2>Current Body Temperature Display</h2>
+            
+            <div class="temp-display">
+                <span class="temp-value" id="tempValue">--</span>
+                <span class="temp-unit">°C</span>
+            </div>
+            
+            <p class="temp-status" id="tempStatus">Waiting for data...</p>
+
+            <div class="test-controls">
+                <button class="test-btn test-btn-primary" onclick="testWithSimulatedData()">
+                    🧪 Test with Simulated Data
+                </button>
+                <button class="test-btn test-btn-success" onclick="testNormalTemp()">
+                    ✅ Test Normal Temp (35.5°C)
+                </button>
+                <button class="test-btn test-btn-danger" onclick="testHighTemp()">
+                    ⚠️ Test High Temp (37.5°C)
+                </button>
+                <button class="test-btn test-btn-primary" onclick="clearDisplay()">
+                    🔄 Clear Display
+                </button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Current Data Information</h2>
+            <div class="data-info">
+                <div class="data-row">
+                    <span class="data-label">Temperature:</span>
+                    <span class="data-value" id="infoTemp">--</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Humidity:</span>
+                    <span class="data-value" id="infoHumidity">--</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Last Update:</span>
+                    <span class="data-value" id="infoTimestamp">--</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Firebase Connection:</span>
+                    <span class="data-value" id="infoConnection">--</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Device Status:</span>
+                    <span class="data-value" id="infoDevice">--</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Log</h2>
+            <div class="log-container" id="logContainer">
+                <div class="log-entry">Test initialized. Connecting to Firebase...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script type="module">
+        // Import Firebase config
+        import { firebaseConfig } from './firebase-config.js';
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let currentTemp = null;
+        let currentHumidity = null;
+        let deviceStatus = false;
+
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateDisplay(temperature) {
+            const tempValueEl = document.getElementById('tempValue');
+            const tempStatusEl = document.getElementById('tempStatus');
+            const infoTempEl = document.getElementById('infoTemp');
+
+            if (temperature !== null && temperature !== undefined) {
+                tempValueEl.textContent = temperature.toFixed(1);
+                infoTempEl.textContent = `${temperature.toFixed(1)}°C`;
+                
+                // Update status based on temperature
+                if (temperature >= 36) {
+                    tempStatusEl.textContent = '⚠️ High Temperature - Auto Spray Triggered!';
+                    tempStatusEl.className = 'temp-status status-warning';
+                } else if (temperature > 30) {
+                    tempStatusEl.textContent = '⚠️ Elevated Temperature';
+                    tempStatusEl.className = 'temp-status status-warning';
+                } else {
+                    tempStatusEl.textContent = '✓ Normal Temperature Range';
+                    tempStatusEl.className = 'temp-status status-normal';
+                }
+                
+                currentTemp = temperature;
+                log(`Temperature updated: ${temperature.toFixed(1)}°C`, 'info');
+            } else {
+                tempValueEl.textContent = '--';
+                tempStatusEl.textContent = 'No data available';
+                tempStatusEl.className = 'temp-status';
+                log('Temperature data not available', 'warning');
+            }
+        }
+
+        function updateConnectionStatus(connected) {
+            const statusIndicator = document.getElementById('connectionStatus');
+            const connectionText = document.getElementById('connectionText');
+            const infoConnection = document.getElementById('infoConnection');
+
+            if (connected) {
+                statusIndicator.className = 'status-indicator status-connected';
+                connectionText.textContent = 'Connected to Firebase';
+                infoConnection.textContent = 'Connected ✓';
+                log('Successfully connected to Firebase', 'info');
+            } else {
+                statusIndicator.className = 'status-indicator status-disconnected';
+                connectionText.textContent = 'Disconnected from Firebase';
+                infoConnection.textContent = 'Disconnected ✗';
+                log('Disconnected from Firebase', 'error');
+            }
+        }
+
+        // Listen to Firebase connection state
+        const connectedRef = database.ref('.info/connected');
+        connectedRef.on('value', (snapshot) => {
+            updateConnectionStatus(snapshot.val() === true);
+        });
+
+        // Listen to temperature data
+        const tempRef = database.ref('temperatures');
+        tempRef.limitToLast(1).on('value', (snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const keys = Object.keys(data);
+                if (keys.length > 0) {
+                    const latest = data[keys[keys.length - 1]];
+                    
+                    updateDisplay(latest.temperature);
+                    
+                    if (latest.humidity !== undefined) {
+                        currentHumidity = latest.humidity;
+                        document.getElementById('infoHumidity').textContent = `${latest.humidity}%`;
+                        log(`Humidity: ${latest.humidity}%`, 'info');
+                    }
+                    
+                    const timestamp = new Date(latest.timestamp).toLocaleString();
+                    document.getElementById('infoTimestamp').textContent = timestamp;
+                    
+                    log('Temperature data received from Firebase', 'info');
+                }
+            } else {
+                log('No temperature data in Firebase', 'warning');
+                updateDisplay(null);
+            }
+        });
+
+        // Listen to device status
+        const deviceRef = database.ref('device/status');
+        deviceRef.on('value', (snapshot) => {
+            deviceStatus = snapshot.val() === true || snapshot.val() === 'on';
+            document.getElementById('infoDevice').textContent = deviceStatus ? 'ON 🔴' : 'OFF ⚪';
+            log(`Device status: ${deviceStatus ? 'ON' : 'OFF'}`, 'info');
+        });
+
+        // Test functions
+        window.testWithSimulatedData = function() {
+            log('Testing with simulated data...', 'info');
+            const temps = [35.2, 36.5, 37.1, 35.8, 38.2];
+            let index = 0;
+            
+            const interval = setInterval(() => {
+                if (index < temps.length) {
+                    updateDisplay(temps[index]);
+                    log(`Simulated temperature: ${temps[index]}°C`, 'info');
+                    index++;
+                } else {
+                    clearInterval(interval);
+                    log('Simulation complete', 'info');
+                }
+            }, 1500);
+        };
+
+        window.testNormalTemp = function() {
+            log('Testing normal temperature (35.5°C)...', 'info');
+            updateDisplay(35.5);
+        };
+
+        window.testHighTemp = function() {
+            log('Testing high temperature (37.5°C)...', 'warning');
+            updateDisplay(37.5);
+        };
+
+        window.clearDisplay = function() {
+            log('Clearing display...', 'info');
+            document.getElementById('tempValue').textContent = '--';
+            document.getElementById('tempStatus').textContent = 'Display cleared';
+            document.getElementById('tempStatus').className = 'temp-status';
+        };
+
+        log('Test page loaded successfully', 'info');
+        log('Waiting for Firebase data...', 'info');
+    </script>
+</body>
+</html>

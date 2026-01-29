@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Quick Test - SunCool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .step-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .step-desc {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-simulator {
+            background: #4caf50;
+            color: white;
+        }
+        .btn-simulator:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76,175,80,0.3);
+        }
+        .btn-dashboard {
+            background: #667eea;
+            color: white;
+        }
+        .btn-dashboard:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.3);
+        }
+        .status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        .status.success {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 SunCool Quick Test</h1>
+        
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">1</span>
+                Backend Server
+            </div>
+            <div class="step-desc">
+                ✅ Server is running on port 3000<br>
+                Status: <span id="serverStatus">Checking...</span>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">2</span>
+                Send Test Data
+            </div>
+            <div class="step-desc">
+                Open the Device Simulator to send temperature data to your backend and Firebase.
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">3</span>
+                View Dashboard
+            </div>
+            <div class="step-desc">
+                Open your dashboard to see the temperature displayed in real-time!
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-simulator" onclick="openSimulator()">
+                📡 Open Simulator
+            </button>
+            <button class="btn-dashboard" onclick="openDashboard()">
+                📊 Open Dashboard
+            </button>
+        </div>
+
+        <div class="status warning">
+            ⚠️ Make sure backend server is running before testing!
+        </div>
+    </div>
+
+    <script>
+        async function checkServer() {
+            try {
+                const response = await fetch('http://localhost:3000/api/health');
+                if (response.ok) {
+                    document.getElementById('serverStatus').innerHTML = '<span style="color: #4caf50">✓ Online</span>';
+                } else {
+                    document.getElementById('serverStatus').innerHTML = '<span style="color: #f44336">✗ Offline</span>';
+                }
+            } catch (error) {
+                document.getElementById('serverStatus').innerHTML = '<span style="color: #f44336">✗ Not Running</span>';
+            }
+        }
+
+        function openSimulator() {
+            window.open('test-device-simulator.html', '_blank');
+        }
+
+        function openDashboard() {
+            window.open('frontend/index.html', '_blank');
+        }
+
+        // Check server status on load
+        checkServer();
+    </script>
+</body>
+</html>

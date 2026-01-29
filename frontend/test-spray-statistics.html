@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Mist Spray Statistics</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.3);
+        }
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+        }
+        pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        input[type="number"] {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 150px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💧 Mist Spray Statistics Test</h1>
+        
+        <div class="test-section">
+            <h3>📊 Current Statistics</h3>
+            <div id="stats-display" class="status info">
+                Loading...
+            </div>
+            <button onclick="loadStats()">🔄 Refresh Statistics</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🌡️ Simulate High Temperature</h3>
+            <div class="input-group">
+                <label>Temperature (°C):</label>
+                <input type="number" id="temp-input" value="37.5" step="0.1" min="30" max="45">
+            </div>
+            <div class="input-group">
+                <label>Humidity (%):</label>
+                <input type="number" id="humidity-input" value="65" step="1" min="0" max="100">
+            </div>
+            <button onclick="sendTemperature()">📤 Send Temperature Data</button>
+            <div id="temp-status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>💧 Manual Spray Log</h3>
+            <p>Create a test spray log entry manually</p>
+            <button onclick="createSprayLog()">➕ Create Test Spray Log</button>
+            <div id="spray-status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 All Spray Logs</h3>
+            <button onclick="viewAllLogs()">👁️ View All Logs</button>
+            <button onclick="clearAllLogs()" style="background: #f44336;">🗑️ Clear All Logs</button>
+            <pre id="logs-display"></pre>
+        </div>
+
+        <div class="test-section">
+            <h3>✅ Test Checklist</h3>
+            <div class="status">
+                <p>✓ Send high temperature (>36°C)</p>
+                <p>✓ Check dashboard for auto-spray alert</p>
+                <p>✓ Verify spray log appears in statistics</p>
+                <p>✓ Check total spray count increases</p>
+                <p>✓ Verify recent events list updates</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9lITWJIwcCy0SFyy8_kdadNgHsnIDcVQ",
+            authDomain: "suncool-666d8.firebaseapp.com",
+            databaseURL: "https://suncool-666d8-default-rtdb.firebaseio.com",
+            projectId: "suncool-666d8",
+            storageBucket: "suncool-666d8.firebasestorage.app",
+            messagingSenderId: "945347754805",
+            appId: "1:945347754805:web:0f6d215a2a62814fb86a7c"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Load statistics
+        async function loadStats() {
+            const display = document.getElementById('stats-display');
+            display.innerHTML = '⏳ Loading statistics...';
+            
+            try {
+                const snapshot = await database.ref('sprayLogs').once('value');
+                const logs = [];
+                
+                snapshot.forEach((childSnapshot) => {
+                    logs.push(childSnapshot.val());
+                });
+
+                const totalSprays = logs.length;
+                const recentLogs = logs
+                    .sort((a, b) => b.timestamp - a.timestamp)
+                    .slice(0, 5);
+
+                let html = `
+                    <h4>📊 Statistics</h4>
+                    <p><strong>Total Sprays:</strong> ${totalSprays}</p>
+                    <p><strong>Auto-spray Threshold:</strong> 36°C</p>
+                `;
+
+                if (recentLogs.length > 0) {
+                    html += '<h4>🕐 Recent 5 Sprays:</h4>';
+                    recentLogs.forEach(log => {
+                        const date = new Date(log.timestamp).toLocaleString();
+                        html += `<p>• ${date} - ${log.temperature.toFixed(1)}°C</p>`;
+                    });
+                } else {
+                    html += '<p>No spray events yet</p>';
+                }
+
+                display.innerHTML = html;
+                display.className = 'status success';
+            } catch (error) {
+                display.innerHTML = `❌ Error: ${error.message}`;
+                display.className = 'status error';
+            }
+        }
+
+        // Send temperature data
+        async function sendTemperature() {
+            const temp = parseFloat(document.getElementById('temp-input').value);
+            const humidity = parseFloat(document.getElementById('humidity-input').value);
+            const status = document.getElementById('temp-status');
+
+            status.innerHTML = '⏳ Sending data...';
+            status.className = 'status info';
+
+            try {
+                await database.ref('temperatures').push({
+                    temperature: temp,
+                    humidity: humidity,
+                    timestamp: Date.now()
+                });
+
+                status.innerHTML = `✅ Temperature data sent: ${temp}°C, ${humidity}%<br>` +
+                    (temp >= 36 ? '🔥 High temperature! Auto-spray should trigger!' : '✓ Normal temperature');
+                status.className = 'status success';
+
+                // If temperature is high, wait a bit then reload stats
+                if (temp >= 36) {
+                    setTimeout(loadStats, 2000);
+                }
+            } catch (error) {
+                status.innerHTML = `❌ Error: ${error.message}`;
+                status.className = 'status error';
+            }
+        }
+
+        // Create spray log manually
+        async function createSprayLog() {
+            const status = document.getElementById('spray-status');
+            status.innerHTML = '⏳ Creating spray log...';
+            status.className = 'status info';
+
+            try {
+                const sprayLog = {
+                    timestamp: Date.now(),
+                    temperature: 36.5,
+                    type: 'automatic',
+                    id: Date.now().toString()
+                };
+
+                await database.ref('sprayLogs').push(sprayLog);
+
+                status.innerHTML = '✅ Test spray log created successfully!';
+                status.className = 'status success';
+
+                setTimeout(loadStats, 500);
+            } catch (error) {
+                status.innerHTML = `❌ Error: ${error.message}`;
+                status.className = 'status error';
+            }
+        }
+
+        // View all logs
+        async function viewAllLogs() {
+            const display = document.getElementById('logs-display');
+            display.textContent = 'Loading...';
+
+            try {
+                const snapshot = await database.ref('sprayLogs').once('value');
+                const logs = [];
+                
+                snapshot.forEach((childSnapshot) => {
+                    logs.push({
+                        key: childSnapshot.key,
+                        ...childSnapshot.val()
+                    });
+                });
+
+                logs.sort((a, b) => b.timestamp - a.timestamp);
+
+                display.textContent = JSON.stringify(logs, null, 2);
+            } catch (error) {
+                display.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        // Clear all logs
+        async function clearAllLogs() {
+            if (!confirm('⚠️ Are you sure you want to delete all spray logs?')) {
+                return;
+            }
+
+            try {
+                await database.ref('sprayLogs').remove();
+                document.getElementById('logs-display').textContent = '✅ All logs cleared';
+                loadStats();
+            } catch (error) {
+                document.getElementById('logs-display').textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Auto-load stats on page load
+        window.onload = loadStats;
+    </script>
+</body>
+</html>
