@@ -19,9 +19,9 @@ const App = () => {
         return () => window.removeEventListener('hashchange', handleHashChange);
     }, []);
 
-    // When user logs in, redirect to dashboard (but not if manually on /login)
+    // When user logs in, redirect to dashboard
     useEffect(() => {
-        if (user && currentPath === '/') {
+        if (user && (currentPath === '/' || currentPath === '/login')) {
             window.location.hash = '#/dashboard';
         }
     }, [user, currentPath]);
