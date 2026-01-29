@@ -6,7 +6,15 @@
     "start": "npx http-server -p 8000 -c-1 -o",
     "dev": "npx http-server -p 8000 -c-1"
   },
-  "keywords": ["suncool", "temperature", "monitoring", "dashboard"],
+  "keywords": [
+    "suncool",
+    "temperature",
+    "monitoring",
+    "dashboard"
+  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^12.8.0"
+  }
 }
