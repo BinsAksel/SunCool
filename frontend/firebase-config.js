@@ -53,45 +53,94 @@ if (!DEMO_MODE) {
         }
     };
     
-    // Mock database
+    // Mock database with device status storage
+    const mockDeviceStatus = { value: false };
+    
     database = {
-        ref: (path) => ({
-            limitToLast: (num) => ({
-                on: (event, callback) => {
-                    // Generate demo temperature data
-                    const generateDemoData = () => {
-                        const data = [];
-                        const now = Date.now();
-                        for (let i = 0; i < 20; i++) {
-                            data.push({
-                                temperature: 25 + Math.random() * 10,
-                                humidity: 60 + Math.random() * 20,
-                                timestamp: now - (19 - i) * 300000 // 5 min intervals
-                            });
+        ref: (path) => {
+            if (path === 'device/status') {
+                // Device status reference
+                return {
+                    set: async (value) => {
+                        mockDeviceStatus.value = value;
+                        // Store in localStorage for persistence
+                        localStorage.setItem('demo_device_status', JSON.stringify(value));
+                        console.log('Demo: Device status set to', value);
+                        return Promise.resolve();
+                    },
+                    on: (event, callback) => {
+                        // Load from localStorage on init
+                        const stored = localStorage.getItem('demo_device_status');
+                        if (stored !== null) {
+                            mockDeviceStatus.value = JSON.parse(stored);
                         }
                         
                         // Create snapshot-like object
-                        const snapshot = {
-                            forEach: (fn) => {
-                                data.forEach((item, index) => {
-                                    fn({
-                                        key: `demo-${index}`,
-                                        val: () => item
-                                    });
-                                });
+                        const sendUpdate = () => {
+                            const snapshot = {
+                                val: () => mockDeviceStatus.value
+                            };
+                            callback(snapshot);
+                        };
+                        
+                        sendUpdate();
+                        
+                        // Listen for storage changes
+                        const storageListener = (e) => {
+                            if (e.key === 'demo_device_status') {
+                                mockDeviceStatus.value = JSON.parse(e.newValue || 'false');
+                                sendUpdate();
                             }
                         };
-                        callback(snapshot);
-                    };
-                    
-                    generateDemoData();
-                    // Update every 5 seconds with new data
-                    setInterval(generateDemoData, 5000);
-                    return () => {}; // unsubscribe
-                },
-                off: () => {}
-            })
-        })
+                        window.addEventListener('storage', storageListener);
+                        
+                        return () => {
+                            window.removeEventListener('storage', storageListener);
+                        };
+                    },
+                    off: () => {}
+                };
+            } else {
+                // Temperature data reference
+                return {
+                    limitToLast: (num) => ({
+                        on: (event, callback) => {
+                            // Generate demo temperature data
+                            const generateDemoData = () => {
+                                const data = [];
+                                const now = Date.now();
+                                for (let i = 0; i < 20; i++) {
+                                    data.push({
+                                        temperature: 25 + Math.random() * 10,
+                                        humidity: 60 + Math.random() * 20,
+                                        timestamp: now - (19 - i) * 300000 // 5 min intervals
+                                    });
+                                }
+                                
+                                // Create snapshot-like object
+                                const snapshot = {
+                                    forEach: (fn) => {
+                                        data.forEach((item, index) => {
+                                            fn({
+                                                key: `demo-${index}`,
+                                                val: () => item
+                                            });
+                                        });
+                                    }
+                                };
+                                callback(snapshot);
+                            };
+                            
+                            generateDemoData();
+                            // Update every 5 seconds with new data
+                            const interval = setInterval(generateDemoData, 5000);
+                            return () => clearInterval(interval);
+                        },
+                        off: () => {}
+                    })
+                };
+            }
+        }
     };
     
     googleProvider = null;

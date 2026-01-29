@@ -105,6 +105,191 @@
     opacity: 0.9;
 }
 
+/* Device Control */
+.device-control {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.device-toggle-btn {
+    padding: 15px 40px;
+    border: 2px solid white;
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    margin: 0 auto;
+    min-width: 200px;
+}
+
+.device-toggle-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.device-toggle-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.device-toggle-btn.device-on {
+    background: rgba(255, 255, 255, 0.95);
+    color: #28a745;
+    border-color: #28a745;
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.5);
+}
+
+.device-toggle-btn.device-off {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: white;
+}
+
+.device-icon {
+    font-size: 24px;
+}
+
+.device-text {
+    font-size: 16px;
+}
+
+.device-status-text {
+    margin-top: 15px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.auto-spray-toggle {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.toggle-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Spray Statistics Section */
+.spray-stats-section {
+    margin-bottom: 30px;
+}
+
+.spray-stats-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.spray-stats-card h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.spray-info {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.spray-info p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.spray-threshold strong,
+.total-sprays strong {
+    color: #667eea;
+    font-size: 18px;
+}
+
+.spray-logs-container h4 {
+    color: #555;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.spray-logs-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.spray-log-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: transform 0.2s;
+}
+
+.spray-log-item:hover {
+    transform: translateX(5px);
+    background: #e9ecef;
+}
+
+.spray-log-icon {
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.spray-log-details {
+    flex: 1;
+}
+
+.spray-log-type {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.spray-log-temp {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+
+.spray-log-temp strong {
+    color: #667eea;
+}
+
+.spray-log-time {
+    color: #999;
+    font-size: 12px;
+}
+
+.no-spray-logs {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
 /* Stats Grid */
 .stats-grid {
     display: grid;
@@ -288,5 +473,19 @@
     .stat-card {
         flex-direction: column;
         text-align: center;
+    }
+
+    .spray-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .spray-log-item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .spray-stats-card {
+        padding: 20px;
     }
 }

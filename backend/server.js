@@ -157,6 +157,45 @@ app.get('/api/temperatures/stats', verifyToken, async (req, res) => {
     }
 });
 
+// Get device status (protected)
+app.get('/api/device/status', verifyToken, async (req, res) => {
+    try {
+        const snapshot = await db.ref('device/status').once('value');
+        const status = snapshot.val();
+        
+        res.json({ 
+            success: true, 
+            data: { status: status === true || status === 'on' }
+        });
+    } catch (error) {
+        console.error('Error fetching device status:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Set device status (protected)
+app.post('/api/device/status', verifyToken, async (req, res) => {
+    try {
+        const { status } = req.body;
+        
+        if (status === undefined) {
+            return res.status(400).json({ success: false, error: 'Status is required' });
+        }
+        
+        const deviceStatus = status === true || status === 'on';
+        await db.ref('device/status').set(deviceStatus);
+        
+        res.json({ 
+            success: true, 
+            message: `Device turned ${deviceStatus ? 'on' : 'off'}`,
+            data: { status: deviceStatus }
+        });
+    } catch (error) {
+        console.error('Error setting device status:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 // Delete old temperature data (admin only - add additional auth as needed)
 app.delete('/api/temperatures/old', verifyToken, async (req, res) => {
     try {
